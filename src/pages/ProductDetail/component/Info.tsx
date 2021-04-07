@@ -1,36 +1,59 @@
-import { Descriptions, Badge } from 'antd';
-export default () => {
+import { Descriptions } from 'antd';
+import { useState } from 'react';
+import { Space } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
+import ProductFormModal from '@/components/ProductFormModal';
+interface Props {
+  info: API.ProductDetail;
+  onSubmit?: (info: API.CreateProduct) => void;
+}
+
+export default ({ info, onSubmit = () => {} }: Props) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const editClick = () => {
+    setIsModalVisible(true);
+  };
+  const handleSubmit = (item: API.CreateProduct) => {
+    setIsModalVisible(false);
+    onSubmit(item);
+  };
+  const Title = () => (
+    <Space>
+      <div>产品信息</div>
+      <EditOutlined onClick={editClick} style={{ cursor: 'pointer' }} />
+    </Space>
+  );
   return (
-    <Descriptions
-      title="产品信息"
-      bordered
-      contentStyle={{
-        background: '#fefefe',
-      }}
-      labelStyle={{
-        background: '#fafafa',
-      }}
-    >
-      <Descriptions.Item label="产品名称">路灯</Descriptions.Item>
-      <Descriptions.Item label="创建时间">
-        2021/02/05 09:10:27
-      </Descriptions.Item>
-      <Descriptions.Item label="产品描述">-</Descriptions.Item>
-      <Descriptions.Item label="Order time">
-        2018-04-24 18:00:00
-      </Descriptions.Item>
-      <Descriptions.Item label="Usage Time" span={2}>
-        2019-04-24 18:00:00
-      </Descriptions.Item>
-      <Descriptions.Item label="Status" span={3}>
-        <Badge status="processing" text="Running" />
-      </Descriptions.Item>
-      <Descriptions.Item label="Negotiated Amount">$80.00</Descriptions.Item>
-      <Descriptions.Item label="Discount">$20.00</Descriptions.Item>
-      <Descriptions.Item label="Official Receipts">$60.00</Descriptions.Item>
-      <Descriptions.Item label="Config Info">
-        Region: East China 1
-      </Descriptions.Item>
-    </Descriptions>
+    <>
+      <Descriptions
+        title={<Title />}
+        bordered
+        contentStyle={{
+          background: '#fefefe',
+        }}
+        labelStyle={{
+          background: '#fafafa',
+        }}
+      >
+        <Descriptions.Item label="产品名称">
+          {info.productName}
+        </Descriptions.Item>
+        <Descriptions.Item label="创建时间">{info.createAt}</Descriptions.Item>
+        <Descriptions.Item label="产品描述">
+          {info.description}
+        </Descriptions.Item>
+      </Descriptions>
+
+      <ProductFormModal
+        title="编辑产品信息"
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        initialValues={{
+          productName: info.productName || '',
+          description: info.description || '',
+        }}
+        onSubmit={handleSubmit}
+      />
+    </>
   );
 };

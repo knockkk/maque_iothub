@@ -1,5 +1,6 @@
 import { extend } from 'umi-request';
 import { getToken } from './storage';
+import { message } from 'antd';
 
 const extendRequest = extend({
   prefix: '/api',
@@ -15,4 +16,20 @@ extendRequest.interceptors.request.use(
   },
   { global: false },
 );
+
+type TStatus = 200 | 502 | 503 | 504;
+extendRequest.interceptors.response.use((response) => {
+  const codeMaps = {
+    502: '网关错误。',
+    503: '服务不可用，服务器暂时过载或维护。',
+    504: '网关超时。',
+    403: '无权限，请尝试重新登录',
+  };
+  const status = response.status as TStatus;
+  if (status !== 200) {
+    message.error(codeMaps[status] || '服务器错误');
+  }
+  return response;
+});
+
 export default extendRequest;

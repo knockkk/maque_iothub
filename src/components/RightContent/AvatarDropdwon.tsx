@@ -3,7 +3,6 @@ import { LogoutOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin, Dropdown } from 'antd';
 import { useModel, history } from 'umi';
 import styles from './index.less';
-import { logout } from '@/apis/user';
 import { removeToken } from '@/utils/storage';
 const Loading = (
   <span className={`${styles.action} ${styles.account}`}>
@@ -16,8 +15,8 @@ const Loading = (
     />
   </span>
 );
-const outlogin = async () => {
-  await logout();
+const logout = async () => {
+  removeToken();
   const { query = {}, pathname } = history.location;
   const { redirect } = query;
   if (window.location.pathname !== '/login' && !redirect) {
@@ -40,8 +39,7 @@ const AvatarDropdown: React.FC = () => {
   const onMenuClick = (e: any) => {
     if (e.key === 'logout' && initialState) {
       setInitialState({ ...initialState, currentUser: undefined });
-      removeToken();
-      outlogin();
+      logout();
       return;
     }
   };

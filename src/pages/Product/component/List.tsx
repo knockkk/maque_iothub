@@ -1,19 +1,11 @@
 import { Table, Space, Divider } from 'antd';
 import { history } from 'umi';
-const data: any = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: '路灯',
-    createTime: '2021/02/05 09:10:27',
-    productKey: 'a1Fx1pRJlqU',
-  });
-}
+
 const dataColumns = [
   {
     title: '产品名称',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'productName',
+    key: 'productName',
   },
   {
     title: 'ProductKey',
@@ -22,21 +14,27 @@ const dataColumns = [
   },
   {
     title: '创建时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
+    dataIndex: 'createAt',
+    key: 'createAt',
   },
 ];
-
-export default () => {
-  const handleCheck = (item: any) => {
-    console.log('text', item);
-    history.push('/admin/product/detail/prodcutkey');
+interface Props {
+  list: API.Product[];
+  onDelete: (item: API.Product) => void;
+}
+export default (props: Props) => {
+  const handleCheck = (item: API.Product) => {
+    const { pathname, search } = history.location;
+    const backUrl = pathname + '?' + search;
+    history.push(`/admin/product/detail/${item.productKey}`, {
+      backUrl,
+    });
   };
   const handleDevice = (item: any) => {
     console.log('text', item);
   };
   const handleDelete = (item: any) => {
-    console.log('text', item);
+    props.onDelete && props.onDelete(item);
   };
   const columns = [
     ...dataColumns,
@@ -72,12 +70,17 @@ export default () => {
       ),
     },
   ];
-
+  const dataSource = props.list.map((item, index) => {
+    return {
+      key: index,
+      ...item,
+    };
+  });
   return (
     <>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={dataSource}
         pagination={{ defaultPageSize: 7 }}
       />
     </>

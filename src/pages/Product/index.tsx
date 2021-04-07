@@ -1,23 +1,55 @@
 import { PageContainer } from '@ant-design/pro-layout';
-import { useState } from 'react';
-import { Modal, Space, Input, Button } from 'antd';
+import { useEffect, useState } from 'react';
+import { Space, Input, Button, message } from 'antd';
 import List from './component/List';
-import CreateForm from './component/CreateForm';
 import Tip from '@/components/Tip';
-
+import { getProducts, createProduct, deleteProduct } from '@/apis/user';
+import ProductFormModal from '@/components/ProductFormModal';
 const { Search } = Input;
 export default () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const handleCreate = () => {
-    setIsModalVisible(true);
+  const [productList, setProdcutList] = useState<API.Product[]>([]);
+  useEffect(() => {
+    updateList();
+  }, []);
+
+  const updateList = async (): Promise<API.Product[]> => {
+    try {
+      const list: API.Product[] = await getProducts();
+      setProdcutList(list);
+    } catch (err) {
+      setProdcutList([]);
+      console.log(err);
+    }
+    return [];
+  };
+
+  const createSubmit = async (value: API.CreateProduct) => {
+    setIsModalVisible(false);
+    try {
+      await createProduct(value);
+      message.success('创建成功');
+      updateList();
+    } catch (err) {
+      console.log(err);
+    }
   };
   const onSearch = (value: string) => {
     console.log('search=>>', value);
   };
+  const onDelete = async (item: API.Product) => {
+    try {
+      await deleteProduct(item.productKey as string);
+      message.success('删除成功');
+      updateList();
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const HeaderTitle = () => (
     <div>
       产品（设备模型）
-      <Tip text="产品是一系列相同设备的集合"></Tip>
+      <Tip text="产品是一类相同设备的集合"></Tip>
     </div>
   );
   return (
@@ -28,22 +60,28 @@ export default () => {
       }}
     >
       <Space size="middle" style={{ marginBottom: '10px' }}>
-        <Button type="primary" onClick={handleCreate}>
+        <Button
+          type="primary"
+          onClick={() => {
+            setIsModalVisible(true);
+          }}
+        >
           创建产品
         </Button>
         <Search onSearch={onSearch} allowClear placeholder="输入产品名称查询" />
       </Space>
-      <List />
-      <Modal
+
+      <List list={productList} onDelete={onDelete} />
+      <ProductFormModal
         title="产品创建"
         visible={isModalVisible}
-        onCancel={() => {
-          setIsModalVisible(false);
+        onCancel={() => setIsModalVisible(false)}
+        initialValues={{
+          productName: '',
+          description: '',
         }}
-        footer={[]}
-      >
-        <CreateForm />
-      </Modal>
+        onSubmit={createSubmit}
+      />
     </PageContainer>
   );
 };

@@ -1,32 +1,40 @@
-import { PageContainer } from '@ant-design/pro-layout';
 import { history } from 'umi';
-import { Descriptions, Space } from 'antd';
+import { Descriptions, Space, message } from 'antd';
 import { useEffect, useState } from 'react';
-import { Access, Func, Info } from './component';
-const tabKeys = {
-  info: 'INFO',
-  func: 'FUNC',
-  access: 'ACCESS',
+import { Func, Info } from './component';
+import { getProduct, updateProduct } from '@/apis/user';
+import PageTab from '@/components/PageTab';
+
+const getProductKeyFromUrl = (pathname: string) => {
+  const arr = pathname.split('/');
+  return arr[arr.length - 1] || '';
 };
 export default () => {
-  const [activeKey, setActiveKey] = useState(tabKeys.info);
+  const [product, setProduct] = useState<API.ProductDetail>({});
+  const [backUrl, setBackUrl] = useState('');
   useEffect(() => {
-    if (history.location.query && history.location.query.current) {
-      const key = history.location.query.current as string;
-      setActiveKey(key);
+    requestProduct();
+    if (history.location.state) {
+      const { backUrl } = history.location.state as { backUrl: string };
+      setBackUrl(backUrl);
     }
   }, []);
-  const handleTabChange = (key: string) => {
-    setActiveKey(key);
-    history.push({
-      query: {
-        current: key,
-      },
-    });
+
+  const requestProduct = async () => {
+    const productKey = getProductKeyFromUrl(history.location.pathname);
+    try {
+      const product = await getProduct(productKey);
+      setProduct(product);
+    } catch (err) {
+      console.log(err);
+    }
   };
+
   const PageContent = () => (
     <Descriptions column={2} style={{ marginBottom: -16 }}>
-      <Descriptions.Item label="ProductKey">a1Fx1pRJlqU</Descriptions.Item>
+      <Descriptions.Item label="ProductKey">
+        {product.productKey}
+      </Descriptions.Item>
       <Descriptions.Item label="设备数">
         <Space>
           <span>1</span>
@@ -35,46 +43,38 @@ export default () => {
       </Descriptions.Item>
     </Descriptions>
   );
-  const TabContent = () => {
-    switch (activeKey) {
-      case tabKeys.info:
-        return <Info />;
-      case tabKeys.func:
-        return <Func />;
-      case tabKeys.access:
-        return <Access />;
-      default:
-        return null;
+
+  const updateProductInfo = async (info: API.CreateProduct) => {
+    try {
+      await updateProduct({ productKey: product.productKey || '', ...info });
+      message.success('更新成功');
+      requestProduct();
+    } catch (err) {
+      console.log(err);
     }
   };
+  const tabList = [
+    {
+      key: 'info',
+      tab: '产品信息',
+      component: <Info info={product} onSubmit={updateProductInfo} />,
+    },
+    {
+      key: 'func',
+      tab: '功能定义',
+      component: <Func />,
+    },
+  ];
+
+  const onBack = () => {
+    history.push(backUrl);
+  };
   return (
-    <PageContainer
-      fixedHeader
-      header={{
-        title: '路灯',
-        onBack: () => {
-          history.push('/admin/product/');
-        },
-      }}
-      content={<PageContent />}
-      tabList={[
-        {
-          tab: '产品信息',
-          key: tabKeys.info,
-        },
-        {
-          tab: '功能定义',
-          key: tabKeys.func,
-        },
-        {
-          tab: '权限管理',
-          key: tabKeys.access,
-        },
-      ]}
-      tabActiveKey={activeKey}
-      onTabChange={handleTabChange}
-    >
-      <TabContent />
-    </PageContainer>
+    <PageTab
+      headerTitle={product.productName}
+      PageContent={PageContent}
+      tabList={tabList}
+      onBack={onBack}
+    />
   );
 };
