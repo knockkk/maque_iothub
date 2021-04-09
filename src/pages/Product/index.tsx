@@ -57,6 +57,22 @@ export default () => {
       fixedHeader
       header={{
         title: <HeaderTitle />,
+        breadcrumb: {
+          routes: [
+            {
+              path: '',
+              breadcrumbName: '首页',
+            },
+            {
+              path: '',
+              breadcrumbName: '设备管理',
+            },
+            {
+              path: '',
+              breadcrumbName: '产品',
+            },
+          ],
+        },
       }}
     >
       <Space size="middle" style={{ marginBottom: '10px' }}>

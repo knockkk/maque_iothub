@@ -35,7 +35,7 @@ interface DataType {
 export default () => {
   const handleCheck = (item: any) => {
     console.log('text', item);
-    history.push('/admin/device/detail/prodcutkey');
+    history.push('/device/detail/prodcutkey');
   };
   const handleDelete = (item: any) => {
     console.log('text', item);

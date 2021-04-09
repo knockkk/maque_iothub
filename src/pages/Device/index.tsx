@@ -54,6 +54,22 @@ export default () => {
       fixedHeader
       header={{
         title: '设备',
+        breadcrumb: {
+          routes: [
+            {
+              path: '',
+              breadcrumbName: '首页',
+            },
+            {
+              path: '',
+              breadcrumbName: '设备管理',
+            },
+            {
+              path: '',
+              breadcrumbName: '设备',
+            },
+          ],
+        },
       }}
       content={<PageContent />}
     >

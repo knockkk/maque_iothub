@@ -26,14 +26,14 @@ export default (props: Props) => {
   const handleCheck = (item: API.Product) => {
     const { pathname, search } = history.location;
     const backUrl = pathname + '?' + search;
-    history.push(`/admin/product/detail/${item.productKey}`, {
+    history.push(`/product/detail/${item.productKey}`, {
       backUrl,
     });
   };
-  const handleDevice = (item: any) => {
-    console.log('text', item);
+  const handleDevice = (item: API.Product) => {
+    history.push(`/device/?pk=${item.productKey}`);
   };
-  const handleDelete = (item: any) => {
+  const handleDelete = (item: API.Product) => {
     props.onDelete && props.onDelete(item);
   };
   const columns = [

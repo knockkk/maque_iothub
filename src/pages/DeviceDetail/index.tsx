@@ -53,7 +53,7 @@ export default () => {
       header={{
         title: '路灯',
         onBack: () => {
-          history.push('/admin/product/');
+          history.push('/product/');
         },
       }}
       content={<PageContent />}
