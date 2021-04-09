@@ -15,12 +15,6 @@ declare namespace API {
     productKey?: string;
     productName?: string;
   };
-  type ProductDetail = {
-    createAt?: number;
-    description?: string;
-    productKey?: string;
-    productName?: string;
-  };
   type CreateProduct = {
     productName: string;
     description: string;
@@ -29,5 +23,14 @@ declare namespace API {
     productKey: string;
     productName: string;
     description: string;
+  };
+  type Device = {
+    productKey?: string;
+    deviceName?: string;
+    deviceSecret?: string;
+    status?: string;
+    connction?: object;
+    connected?: boolean | string;
+    lastOnlineTime?: number | string;
   };
 }

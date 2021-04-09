@@ -1,54 +1,67 @@
 import { PageContainer } from '@ant-design/pro-layout';
-import { ProFormSelect } from '@ant-design/pro-form';
 import { Row, Col, Statistic, Input, Tooltip, Space, Button } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
+import { history } from 'umi';
 import styles from './index.less';
 import List from './components/List';
+import SearchSelectProduct from './components/SearchSelectProduct';
+import { getDevices } from '@/apis/device';
 
 const { Search } = Input;
+const getProductKeyFromUrl = (query: any) => {
+  if (query) {
+    return query.pk || '';
+  }
+  return '';
+};
 export default () => {
-  const PageContent = () => {
-    return (
-      <div>
-        <Row gutter={48} wrap={false}>
-          <Col span={4}>
-            <ProFormSelect
-              label=""
-              showSearch
-              request={async ({ keyWords }) => {
-                console.log('keywords', keyWords);
-                return [
-                  {
-                    value: keyWords,
-                    label: '目标_target',
-                  },
-                  {
-                    value: keyWords,
-                    label: '路灯',
-                  },
-                ];
-              }}
-              placeholder="选择产品"
-            />
-          </Col>
-          <Col span={4} offset={1}>
-            <Statistic title="设备总数" value={1} />
-          </Col>
-          <Col span={4}>
-            <Statistic title="激活设备" value={0} />
-          </Col>
-          <Col span={4}>
-            <Statistic title="当前在线" value={0} />
-          </Col>
-          <Col span={4}>
-            <Tooltip title="刷新">
-              <ReloadOutlined className={styles.reload} />
-            </Tooltip>
-          </Col>
-        </Row>
-      </div>
-    );
+  const [deviceList, setDeviceList] = useState<API.Device[]>([]);
+  const [currPK, setCurrPK] = useState('');
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const currPK = getProductKeyFromUrl(history.location.query);
+    setCurrPK(currPK);
+  }, []);
+
+  useEffect(() => {
+    history.push(`/device/?pk=${currPK}`);
+    updateDeviceList(currPK);
+  }, [currPK]);
+
+  const updateDeviceList = async (productKey: string) => {
+    setLoading(true);
+    try {
+      let list: API.Device[] = await getDevices(productKey);
+      console.log('list', list);
+      list = list.map((item) => {
+        let status = '';
+        if (item.connected === null) {
+          status = '未激活';
+        } else {
+          status = item.connected ? '在线' : '离线';
+        }
+        return {
+          deviceName: item.deviceName,
+          productKey: item.productKey,
+          connected: status,
+          lastOnlineTime: item.lastOnlineTime ? item.lastOnlineTime : '无',
+        };
+      });
+      setLoading(false);
+      setDeviceList(list);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
   };
+  const handlePKChange = (pk: string) => {
+    setCurrPK(pk);
+  };
+  const activeNum = deviceList.filter((item) => item.connected !== '未激活')
+    .length;
+  const onlineNum = deviceList.filter((item) => item.connected === '在线')
+    .length;
   return (
     <PageContainer
       fixedHeader
@@ -71,13 +84,36 @@ export default () => {
           ],
         },
       }}
-      content={<PageContent />}
+      content={
+        <Row gutter={48} wrap={false}>
+          <Col span={4}>
+            <SearchSelectProduct currPK={currPK} onChange={handlePKChange} />
+          </Col>
+          <Col span={4} offset={1}>
+            <Statistic title="设备总数" value={deviceList.length} />
+          </Col>
+          <Col span={4}>
+            <Statistic title="激活设备" value={activeNum} />
+          </Col>
+          <Col span={4}>
+            <Statistic title="当前在线" value={onlineNum} />
+          </Col>
+          <Col span={4}>
+            <Tooltip title="刷新">
+              <ReloadOutlined
+                onClick={() => updateDeviceList(currPK)}
+                className={styles.reload}
+              />
+            </Tooltip>
+          </Col>
+        </Row>
+      }
     >
       <Space size="middle" style={{ marginBottom: '10px' }}>
         <Button type="primary">添加设备</Button>
         <Search onSearch={() => {}} allowClear placeholder="输入设备名称查询" />
       </Space>
-      <List />
+      <List list={deviceList} loading={loading} onDelete={() => {}} />
     </PageContainer>
   );
 };

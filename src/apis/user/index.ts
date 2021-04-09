@@ -13,9 +13,7 @@ export async function getProducts(): Promise<API.Product[]> {
   return request.get('/product');
 }
 
-export async function getProduct(
-  productKey: string,
-): Promise<API.ProductDetail> {
+export async function getProduct(productKey: string): Promise<API.Product> {
   return request.get(`/product/${productKey}`);
 }
 

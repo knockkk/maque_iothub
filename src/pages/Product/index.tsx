@@ -8,20 +8,18 @@ import ProductFormModal from '@/components/ProductFormModal';
 const { Search } = Input;
 export default () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [productList, setProdcutList] = useState<API.Product[]>([]);
+  const [productList, setProductLit] = useState<API.Product[]>([]);
   useEffect(() => {
     updateList();
   }, []);
 
-  const updateList = async (): Promise<API.Product[]> => {
+  const updateList = async () => {
     try {
       const list: API.Product[] = await getProducts();
-      setProdcutList(list);
+      setProductLit(list);
     } catch (err) {
-      setProdcutList([]);
       console.log(err);
     }
-    return [];
   };
 
   const createSubmit = async (value: API.CreateProduct) => {

@@ -4,7 +4,7 @@ import { Space } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import ProductFormModal from '@/components/ProductFormModal';
 interface Props {
-  info: API.ProductDetail;
+  info: API.Product;
   onSubmit?: (info: API.CreateProduct) => void;
 }
 

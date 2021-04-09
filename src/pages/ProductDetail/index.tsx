@@ -10,7 +10,7 @@ const getProductKeyFromUrl = (pathname: string) => {
   return arr[arr.length - 1] || '';
 };
 export default () => {
-  const [product, setProduct] = useState<API.ProductDetail>({});
+  const [product, setProduct] = useState<API.Product>({});
   const [backUrl, setBackUrl] = useState('');
   useEffect(() => {
     requestProduct();

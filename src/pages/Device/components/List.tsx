@@ -1,44 +1,50 @@
 import { Table, Space, Divider } from 'antd';
 import { history } from 'umi';
-const data: DataType[] = [];
-for (let i = 0; i < 10; i++) {
-  data.push({
-    key: i,
-    name: '路灯',
-    status: '启用',
-    product: '路灯',
-  });
-}
+
 const dataColumns = [
   {
     title: '设备名称',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'deviceName',
+    key: 'deviceName',
   },
   {
-    title: '设备所属产品',
-    dataIndex: 'product',
-    key: 'product',
+    title: 'productKey',
+    dataIndex: 'productKey',
+    key: 'productKey',
   },
   {
     title: '状态',
-    dataIndex: 'status',
-    key: 'status',
+    dataIndex: 'connected',
+    key: 'connected',
+  },
+  {
+    title: '最后上线时间',
+    dataIndex: 'lastOnlineTime',
+    key: 'lastOnlineTime',
   },
 ];
 interface DataType {
   key: React.Key;
-  name: string;
-  status: string;
-  product: string;
+  deviceName: string;
+  productKey: string;
+  connected: string;
+  lastOnlineTime: string;
 }
-export default () => {
-  const handleCheck = (item: any) => {
-    console.log('text', item);
-    history.push('/device/detail/prodcutkey');
+interface Props {
+  list: API.Device[];
+  onDelete: (item: API.Device) => void;
+  loading?: boolean;
+}
+export default (props: Props) => {
+  const handleCheck = (item: API.Product) => {
+    const { pathname, search } = history.location;
+    const backUrl = pathname + '?' + search;
+    history.push(`/device/detail/${item.productKey}`, {
+      backUrl,
+    });
   };
-  const handleDelete = (item: any) => {
-    console.log('text', item);
+  const handleDelete = (item: API.Product) => {
+    props.onDelete && props.onDelete(item);
   };
   // rowSelection object indicates the need for row selection
   const rowSelection = {
@@ -49,10 +55,9 @@ export default () => {
         selectedRows,
       );
     },
-    getCheckboxProps: (record: DataType) => ({
-      disabled: record.name === 'Disabled User', // Column configuration not to be checked
-      name: record.name,
-    }),
+    getCheckboxProps: (record: DataType) => {
+      console.log('record=>>', record);
+    },
   };
   const columns = [
     ...dataColumns,
@@ -80,16 +85,22 @@ export default () => {
       ),
     },
   ];
-
+  const dataSource = props.list.map((item, index) => {
+    return {
+      key: index,
+      ...item,
+    };
+  });
   return (
     <>
       <Table
-        rowSelection={{
-          type: 'checkbox',
-          ...rowSelection,
-        }}
+        // rowSelection={{
+        //   type: 'checkbox',
+        //   ...rowSelection,
+        // }}
+        loading={props.loading}
         columns={columns}
-        dataSource={data}
+        dataSource={dataSource}
         pagination={{ defaultPageSize: 5 }}
       />
     </>
