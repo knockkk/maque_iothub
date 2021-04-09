@@ -84,9 +84,13 @@ export default () => {
   };
   const hanleDeviceDelete = async (item: API.Device) => {
     try {
-      await deleteDevice(item);
-      message.success('删除成功');
-      updateDeviceList(currPK);
+      const resp = await deleteDevice(item);
+      if (resp.status === 200) {
+        message.success('删除成功');
+        updateDeviceList(currPK);
+      } else {
+        message.error('删除失败' + JSON.stringify(resp));
+      }
     } catch (err) {
       console.log(err);
     }
