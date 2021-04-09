@@ -47,8 +47,10 @@ export default ({
 
   const handleTabChange = (key: string) => {
     setActiveKey(key);
+    const query = history.location.query || {};
     history.push({
       query: {
+        ...query,
         current: key,
       },
     });

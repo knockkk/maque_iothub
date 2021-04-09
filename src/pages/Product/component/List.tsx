@@ -21,11 +21,12 @@ const dataColumns = [
 interface Props {
   list: API.Product[];
   onDelete: (item: API.Product) => void;
+  loading?: boolean;
 }
 export default (props: Props) => {
   const handleCheck = (item: API.Product) => {
     const { pathname, search } = history.location;
-    const backUrl = pathname + '?' + search;
+    const backUrl = pathname + search;
     history.push(`/product/detail/${item.productKey}`, {
       backUrl,
     });
@@ -79,6 +80,7 @@ export default (props: Props) => {
   return (
     <>
       <Table
+        loading={props.loading}
         columns={columns}
         dataSource={dataSource}
         pagination={{ defaultPageSize: 7 }}

@@ -36,17 +36,20 @@ interface Props {
   loading?: boolean;
 }
 export default (props: Props) => {
-  const handleCheck = (item: API.Product) => {
+  const handleCheck = (item: API.Device) => {
     const { pathname, search } = history.location;
-    const backUrl = pathname + '?' + search;
-    history.push(`/device/detail/${item.productKey}`, {
-      backUrl,
-    });
+    const backUrl = pathname + search;
+    history.push(
+      `/device/detail?pk=${item.productKey}&deviceName=${item.deviceName}`,
+      {
+        backUrl,
+      },
+    );
   };
-  const handleDelete = (item: API.Product) => {
+  const handleDelete = (item: API.Device) => {
     props.onDelete && props.onDelete(item);
   };
-  // rowSelection object indicates the need for row selection
+
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       console.log(

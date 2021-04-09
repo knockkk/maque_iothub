@@ -1,12 +1,22 @@
 import { PageContainer } from '@ant-design/pro-layout';
-import { Row, Col, Statistic, Input, Tooltip, Space, Button } from 'antd';
+import {
+  Row,
+  Col,
+  Statistic,
+  Input,
+  Tooltip,
+  Space,
+  Button,
+  message,
+} from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { history } from 'umi';
 import styles from './index.less';
 import List from './components/List';
 import SearchSelectProduct from './components/SearchSelectProduct';
-import { getDevices } from '@/apis/device';
+import { getDevices, createDevice, deleteDevice } from '@/apis/device';
+import DeviceFormModal from './components/DeviceFormModal';
 
 const { Search } = Input;
 const getProductKeyFromUrl = (query: any) => {
@@ -19,6 +29,7 @@ export default () => {
   const [deviceList, setDeviceList] = useState<API.Device[]>([]);
   const [currPK, setCurrPK] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   useEffect(() => {
     const currPK = getProductKeyFromUrl(history.location.query);
     setCurrPK(currPK);
@@ -33,7 +44,6 @@ export default () => {
     setLoading(true);
     try {
       let list: API.Device[] = await getDevices(productKey);
-      console.log('list', list);
       list = list.map((item) => {
         let status = '';
         if (item.connected === null) {
@@ -57,6 +67,29 @@ export default () => {
   };
   const handlePKChange = (pk: string) => {
     setCurrPK(pk);
+  };
+  const createSubmit = async (value: API.CreateDevice) => {
+    setIsModalVisible(false);
+    try {
+      const response = await createDevice(value);
+      if (response.error) {
+        message.error(response.error);
+      } else {
+        message.success('添加成功');
+        updateDeviceList(currPK);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const hanleDeviceDelete = async (item: API.Device) => {
+    try {
+      await deleteDevice(item);
+      message.success('删除成功');
+      updateDeviceList(currPK);
+    } catch (err) {
+      console.log(err);
+    }
   };
   const activeNum = deviceList.filter((item) => item.connected !== '未激活')
     .length;
@@ -110,10 +143,27 @@ export default () => {
       }
     >
       <Space size="middle" style={{ marginBottom: '10px' }}>
-        <Button type="primary">添加设备</Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            setIsModalVisible(true);
+          }}
+        >
+          添加设备
+        </Button>
         <Search onSearch={() => {}} allowClear placeholder="输入设备名称查询" />
       </Space>
-      <List list={deviceList} loading={loading} onDelete={() => {}} />
+      <List list={deviceList} loading={loading} onDelete={hanleDeviceDelete} />
+
+      <DeviceFormModal
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        initialValues={{
+          productKey: currPK,
+          deviceName: '',
+        }}
+        onSubmit={createSubmit}
+      />
     </PageContainer>
   );
 };

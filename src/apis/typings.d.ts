@@ -33,4 +33,8 @@ declare namespace API {
     connected?: boolean | string;
     lastOnlineTime?: number | string;
   };
+  type CreateDevice = {
+    productKey: string;
+    deviceName: string;
+  };
 }

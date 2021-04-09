@@ -28,7 +28,7 @@ export default [
         component: './Device',
       },
       {
-        path: '/device/detail/:deviceKey',
+        path: '/device/detail',
         name: '设备详情',
         component: './DeviceDetail',
         hideInMenu: true,

@@ -9,15 +9,19 @@ const { Search } = Input;
 export default () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [productList, setProductLit] = useState<API.Product[]>([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     updateList();
   }, []);
 
   const updateList = async () => {
+    setLoading(true);
     try {
       const list: API.Product[] = await getProducts();
       setProductLit(list);
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   };
@@ -85,7 +89,7 @@ export default () => {
         <Search onSearch={onSearch} allowClear placeholder="输入产品名称查询" />
       </Space>
 
-      <List list={productList} onDelete={onDelete} />
+      <List list={productList} loading={loading} onDelete={onDelete} />
       <ProductFormModal
         title="产品创建"
         visible={isModalVisible}
