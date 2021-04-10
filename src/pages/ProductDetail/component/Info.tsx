@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Space } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import ProductFormModal from '@/components/ProductFormModal';
+import { unixToTimeString } from '@/utils/time';
 interface Props {
   info: API.Product;
   onSubmit?: (info: API.CreateProduct) => void;
@@ -38,7 +39,9 @@ export default ({ info, onSubmit = () => {} }: Props) => {
         <Descriptions.Item label="产品名称">
           {info.productName}
         </Descriptions.Item>
-        <Descriptions.Item label="创建时间">{info.createAt}</Descriptions.Item>
+        <Descriptions.Item label="创建时间">
+          {unixToTimeString(info.createAt)}
+        </Descriptions.Item>
         <Descriptions.Item label="产品描述">
           {info.description}
         </Descriptions.Item>

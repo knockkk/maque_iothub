@@ -1,5 +1,5 @@
 import { history } from 'umi';
-import { Descriptions, Space } from 'antd';
+import { Descriptions, Space, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import { Func, Info } from './component';
 import PageTab from '@/components/PageTab';
@@ -8,6 +8,7 @@ import { getDevice } from '@/apis/device';
 export default () => {
   const [backUrl, setBackUrl] = useState('');
   const [device, setDevice] = useState<API.Device>({});
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     requestDevice();
     if (history.location.state) {
@@ -36,7 +37,7 @@ export default () => {
       <Descriptions.Item label="deviceSecret">
         <Space>
           <span>******</span>
-          <a>查看</a>
+          <a onClick={() => setModalVisible(true)}>查看</a>
         </Space>
       </Descriptions.Item>
     </Descriptions>
@@ -58,11 +59,31 @@ export default () => {
     history.push(backUrl);
   };
   return (
-    <PageTab
-      headerTitle={device.deviceName}
-      PageContent={PageContent}
-      tabList={tabList}
-      onBack={onBack}
-    />
+    <>
+      <PageTab
+        headerTitle={device.deviceName}
+        PageContent={PageContent}
+        tabList={tabList}
+        onBack={onBack}
+      />
+      <Modal
+        title="设备证书"
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        footer={[]}
+      >
+        <Descriptions bordered>
+          <Descriptions.Item label="ProductKey" span={3}>
+            {device.productKey}
+          </Descriptions.Item>
+          <Descriptions.Item label="DeviceName" span={3}>
+            {device.deviceName}
+          </Descriptions.Item>
+          <Descriptions.Item label="DeviceSecret" span={3}>
+            {device.deviceSecret}
+          </Descriptions.Item>
+        </Descriptions>
+      </Modal>
+    </>
   );
 };

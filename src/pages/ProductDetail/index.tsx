@@ -30,6 +30,10 @@ export default () => {
     }
   };
 
+  const toDevice = () => {
+    history.push(`/device/?pk=${product.productKey}`);
+  };
+
   const PageContent = () => (
     <Descriptions column={2} style={{ marginBottom: -16 }}>
       <Descriptions.Item label="ProductKey">
@@ -37,8 +41,8 @@ export default () => {
       </Descriptions.Item>
       <Descriptions.Item label="设备数">
         <Space>
-          <span>1</span>
-          <a>前往管理</a>
+          <span>{product.deviceNum}</span>
+          <a onClick={toDevice}>前往管理</a>
         </Space>
       </Descriptions.Item>
     </Descriptions>

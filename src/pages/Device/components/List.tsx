@@ -1,35 +1,7 @@
 import { Table, Space, Divider } from 'antd';
 import { history } from 'umi';
-
-const dataColumns = [
-  {
-    title: '设备名称',
-    dataIndex: 'deviceName',
-    key: 'deviceName',
-  },
-  {
-    title: 'productKey',
-    dataIndex: 'productKey',
-    key: 'productKey',
-  },
-  {
-    title: '状态',
-    dataIndex: 'connected',
-    key: 'connected',
-  },
-  {
-    title: '最后上线时间',
-    dataIndex: 'lastOnlineTime',
-    key: 'lastOnlineTime',
-  },
-];
-interface DataType {
-  key: React.Key;
-  deviceName: string;
-  productKey: string;
-  connected: string;
-  lastOnlineTime: string;
-}
+import { unixToTimeString } from '@/utils/time';
+import DeviceStatus from '@/components/DeviceStatus';
 interface Props {
   list: API.Device[];
   onDelete: (item: API.Device) => void;
@@ -50,20 +22,30 @@ export default (props: Props) => {
     props.onDelete && props.onDelete(item);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows,
-      );
-    },
-    getCheckboxProps: (record: DataType) => {
-      console.log('record=>>', record);
-    },
-  };
   const columns = [
-    ...dataColumns,
+    {
+      title: '设备名称',
+      dataIndex: 'deviceName',
+      key: 'deviceName',
+    },
+    {
+      title: 'productKey',
+      dataIndex: 'productKey',
+      key: 'productKey',
+    },
+    {
+      title: '状态',
+      dataIndex: 'connected',
+      key: 'connected',
+      render: (status: string) => {
+        return <DeviceStatus status={status} />;
+      },
+    },
+    {
+      title: '最后上线时间',
+      dataIndex: 'lastOnlineTime',
+      key: 'lastOnlineTime',
+    },
     {
       title: '操作',
       key: 'action',
@@ -92,15 +74,12 @@ export default (props: Props) => {
     return {
       key: index,
       ...item,
+      lastOnlineTime: unixToTimeString(item.lastOnlineTime),
     };
   });
   return (
     <>
       <Table
-        // rowSelection={{
-        //   type: 'checkbox',
-        //   ...rowSelection,
-        // }}
         loading={props.loading}
         columns={columns}
         dataSource={dataSource}

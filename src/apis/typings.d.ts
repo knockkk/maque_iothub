@@ -14,6 +14,7 @@ declare namespace API {
     description?: string;
     productKey?: string;
     productName?: string;
+    deviceNum?: number;
   };
   type CreateProduct = {
     productName: string;

@@ -1,6 +1,6 @@
 import { Table, Space, Divider } from 'antd';
 import { history } from 'umi';
-
+import { unixToTimeString } from '@/utils/time';
 const dataColumns = [
   {
     title: '产品名称',
@@ -75,6 +75,7 @@ export default (props: Props) => {
     return {
       key: index,
       ...item,
+      createAt: unixToTimeString(item.createAt),
     };
   });
   return (
