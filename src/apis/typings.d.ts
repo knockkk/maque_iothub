@@ -15,6 +15,16 @@ declare namespace API {
     productKey?: string;
     productName?: string;
     deviceNum?: number;
+    funcArr?: FuncDef[];
+  };
+  type FuncDef = {
+    funcType?: string;
+    funcName?: string;
+    funcKey?: string;
+    dataType?: string;
+    definition?: Object;
+    unit?: string;
+    description?: string;
   };
   type CreateProduct = {
     productName: string;

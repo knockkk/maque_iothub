@@ -8,7 +8,7 @@ export default [
   {
     path: '/',
     name: '设备管理',
-    icon: 'crown',
+    icon: 'setting',
     routes: [
       {
         path: '/product',

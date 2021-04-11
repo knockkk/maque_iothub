@@ -24,11 +24,32 @@ export async function createProduct(data: API.CreateProduct) {
 }
 
 export async function updateProduct(data: API.UpdateProduct) {
-  return request.put('/product/update', {
+  return request.post('/product/update', {
     data,
   });
 }
 
 export async function deleteProduct(productKey: string) {
   return request.delete(`/product/${productKey}`);
+}
+
+export async function getProductFunc(productKey: string) {
+  return request.get(`/product/getFunc/${productKey}`);
+}
+
+export async function addProductFunc(productKey: string, funcObj: API.FuncDef) {
+  return request.post(`/product/addFunc`, {
+    data: {
+      productKey,
+      funcObj,
+    },
+  });
+}
+export async function deleteProductFunc(productKey: string, funcKey: string) {
+  return request.post(`/product/deleteFunc`, {
+    data: {
+      productKey,
+      funcKey,
+    },
+  });
 }

@@ -4,6 +4,7 @@ import { Space } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import ProductFormModal from '@/components/ProductFormModal';
 import { unixToTimeString } from '@/utils/time';
+import styles from '../index.less';
 interface Props {
   info: API.Product;
   onSubmit?: (info: API.CreateProduct) => void;
@@ -21,7 +22,10 @@ export default ({ info, onSubmit = () => {} }: Props) => {
   const Title = () => (
     <Space>
       <div>产品信息</div>
-      <EditOutlined onClick={editClick} style={{ cursor: 'pointer' }} />
+      <EditOutlined onClick={editClick} className={styles.optionIcon} />
+      <div onClick={editClick} className={styles.optionText}>
+        编辑
+      </div>
     </Space>
   );
   return (

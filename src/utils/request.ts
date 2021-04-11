@@ -27,7 +27,9 @@ extendRequest.interceptors.response.use((response) => {
   };
   const status = response.status as TStatus;
   if (status !== 200) {
-    message.error(codeMaps[status] || '服务器错误');
+    const errMsg = codeMaps[status] || '服务器错误';
+    message.error(errMsg);
+    return Promise.reject(errMsg);
   }
   return response;
 });

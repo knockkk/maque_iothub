@@ -66,7 +66,7 @@ export default () => {
     {
       key: 'func',
       tab: '功能定义',
-      component: <Func />,
+      component: <Func productKey={product.productKey} />,
     },
   ];
 
