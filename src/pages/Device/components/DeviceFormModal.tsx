@@ -26,11 +26,13 @@ export default (props: Props) => {
     props.onSubmit && props.onSubmit(value);
   };
 
-  const pOptionValueEnum = productList.reduce((prev, curr) => {
-    const productKey = curr.productKey as string;
-    prev[productKey] = curr.productName;
-    return prev;
-  }, {});
+  const pOptionValueEnum = Array.isArray(productList)
+    ? productList.reduce((prev, curr) => {
+        const productKey = curr.productKey as string;
+        prev[productKey] = curr.productName;
+        return prev;
+      }, {})
+    : [];
   return (
     <Modal
       title="添加设备"

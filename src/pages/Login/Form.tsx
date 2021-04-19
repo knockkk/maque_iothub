@@ -44,6 +44,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       onFinish={async (values: API.LoginParams) => {
         handleSubmit(values);
       }}
+      initialValues={{
+        username: 'admin',
+        password: 'maqueiot',
+      }}
     >
       <ProFormText
         name="username"
@@ -51,7 +55,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
           size: 'large',
           prefix: <UserOutlined className={styles.prefixIcon} />,
         }}
-        placeholder="用户名: admin"
+        placeholder="请输入用户名"
         rules={[
           {
             required: true,
@@ -65,7 +69,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
           size: 'large',
           prefix: <LockOutlined className={styles.prefixIcon} />,
         }}
-        placeholder="密码: maqueiot"
+        placeholder="请输入密码"
         rules={[
           {
             required: true,

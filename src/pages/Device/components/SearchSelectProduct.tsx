@@ -19,12 +19,14 @@ export default (props: Props) => {
       console.log(err);
     }
   };
-  const options = productList.map((item) => {
-    return {
-      value: item.productKey || '',
-      label: item.productName || '',
-    };
-  });
+  const options = Array.isArray(productList)
+    ? productList.map((item) => {
+        return {
+          value: item.productKey || '',
+          label: item.productName || '',
+        };
+      })
+    : [];
   const handleChange = (value: string) => {
     props.onChange && props.onChange(value);
   };

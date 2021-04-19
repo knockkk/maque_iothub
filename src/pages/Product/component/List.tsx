@@ -71,13 +71,16 @@ export default (props: Props) => {
       ),
     },
   ];
-  const dataSource = props.list.map((item, index) => {
-    return {
-      key: index,
-      ...item,
-      createAt: unixToTimeString(item.createAt),
-    };
-  });
+  const { list } = props;
+  const dataSource = Array.isArray(list)
+    ? list.map((item, index) => {
+        return {
+          key: index,
+          ...item,
+          createAt: unixToTimeString(item.createAt),
+        };
+      })
+    : [];
   return (
     <>
       <Table
