@@ -31,14 +31,15 @@ export default () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   useEffect(() => {
-    const currPK = getProductKeyFromUrl(history.location.query);
-    setCurrPK(currPK);
+    const pk = getProductKeyFromUrl(history.location.query);
+    updatePKandDeviceList(pk);
   }, []);
 
-  useEffect(() => {
-    history.push(`/device/?pk=${currPK}`);
-    updateDeviceList(currPK);
-  }, [currPK]);
+  const updatePKandDeviceList = (pk: string) => {
+    setCurrPK(pk);
+    history.push(`/device/?pk=${pk}`);
+    updateDeviceList(pk);
+  };
 
   const updateDeviceList = async (productKey: string) => {
     setLoading(true);
@@ -66,7 +67,7 @@ export default () => {
     }
   };
   const handlePKChange = (pk: string) => {
-    setCurrPK(pk);
+    updatePKandDeviceList(pk);
   };
   const createSubmit = async (value: API.CreateDevice) => {
     setIsModalVisible(false);
