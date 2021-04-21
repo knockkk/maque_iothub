@@ -25,3 +25,14 @@ export async function createDevice(data: API.CreateDevice) {
     data,
   });
 }
+export async function getMessages(
+  productKey: string,
+  deviceName: string,
+): Promise<API.Message[]> {
+  return request.post(`/device/getMessages`, {
+    data: {
+      productKey,
+      deviceName,
+    },
+  });
+}

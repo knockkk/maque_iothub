@@ -4,11 +4,12 @@ interface Props {
   info: API.Device;
 }
 export default ({ info }: Props) => {
+  const connnected = info.connction ? info.connction.connected : null;
   let status = '';
-  if (info.connected === null) {
+  if (connnected === null) {
     status = '未激活';
   } else {
-    status = info.connected ? '在线' : '离线';
+    status = connnected ? '在线' : '离线';
   }
   return (
     <Descriptions

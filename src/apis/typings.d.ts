@@ -48,4 +48,14 @@ declare namespace API {
     productKey: string;
     deviceName: string;
   };
+  type Message = {
+    dataType?: string;
+    deviceName?: string;
+    messageId?: string;
+    payload?: Buffer;
+    dataString?: string;
+    dataObj?: object;
+    productName?: string;
+    sentAt?: number;
+  };
 }

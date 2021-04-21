@@ -51,7 +51,7 @@ export default () => {
     },
     {
       key: 'func',
-      tab: '功能定义',
+      tab: '设备数据',
       component: <Func />,
     },
   ];
