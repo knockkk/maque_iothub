@@ -3,7 +3,13 @@ export default [
   {
     path: '/',
     exact: true,
-    redirect: '/product',
+    redirect: '/analysis',
+  },
+  {
+    path: '/analysis',
+    name: '统计分析',
+    icon: 'dashboard',
+    component: './Analysis',
   },
   {
     path: '/',

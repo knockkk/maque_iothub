@@ -1,22 +1,12 @@
 import { PageContainer } from '@ant-design/pro-layout';
-import {
-  Row,
-  Col,
-  Statistic,
-  Input,
-  Tooltip,
-  Space,
-  Button,
-  message,
-} from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { Row, Col, Statistic, Input, Space, Button, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { history } from 'umi';
-import styles from './index.less';
 import List from './components/List';
 import SearchSelectProduct from './components/SearchSelectProduct';
 import { getDevices, createDevice, deleteDevice } from '@/apis/device';
 import DeviceFormModal from './components/DeviceFormModal';
+import ReloadIcon from '@/components/ReloadIcon';
 
 const { Search } = Input;
 const getProductKeyFromUrl = (query: any) => {
@@ -137,12 +127,7 @@ export default () => {
             <Statistic title="当前在线" value={onlineNum} />
           </Col>
           <Col span={4}>
-            <Tooltip title="刷新">
-              <ReloadOutlined
-                onClick={() => updateDeviceList(currPK)}
-                className={styles.reload}
-              />
-            </Tooltip>
+            <ReloadIcon onClick={() => updateDeviceList(currPK)} />
           </Col>
         </Row>
       }
