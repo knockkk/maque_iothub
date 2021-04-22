@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogoutOutlined } from '@ant-design/icons';
+import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin, Dropdown } from 'antd';
 import { useModel, history } from 'umi';
 import styles from './index.less';
@@ -41,10 +41,16 @@ const AvatarDropdown: React.FC = () => {
       setInitialState({ ...initialState, currentUser: undefined });
       logout();
       return;
+    } else {
+      history.push('/account/settings');
     }
   };
   const DropdownMenu = (
     <Menu className={styles.menu} onClick={onMenuClick}>
+      <Menu.Item key="setting">
+        <SettingOutlined />
+        个人设置
+      </Menu.Item>
       <Menu.Item key="logout">
         <LogoutOutlined />
         退出登录

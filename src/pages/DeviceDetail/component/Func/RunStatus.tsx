@@ -92,7 +92,7 @@ export default ({ statusArr = [] }: Props) => {
                     marginLeft: '20px',
                   }}
                 >
-                  发送于 {latestMsg.sentAt}
+                  发送于 {unixToTimeString(latestMsg.sentAt)}
                 </span>
               )}
             </p>

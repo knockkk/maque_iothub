@@ -12,6 +12,11 @@ export default [
     component: './Analysis',
   },
   {
+    path: '/account/settings',
+    component: './Settings',
+    hideInMenu: true,
+  },
+  {
     path: '/',
     name: '设备管理',
     icon: 'setting',
