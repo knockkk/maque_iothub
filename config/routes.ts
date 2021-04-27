@@ -48,6 +48,12 @@ export default [
     ],
   },
   {
+    path: '/alarm',
+    name: '设备告警',
+    icon: 'bell',
+    component: './Analysis',
+  },
+  {
     component: './404',
   },
 ];
