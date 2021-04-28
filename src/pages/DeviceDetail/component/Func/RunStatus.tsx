@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Card, Alert, Button } from 'antd';
 import { history } from 'umi';
 import { useEffect, useState } from 'react';
 import { getMessages } from '@/apis/device';
@@ -26,17 +26,15 @@ export default ({ statusArr = [] }: Props) => {
           data: item.dataObj[funcKey],
         };
       });
-    console.log(checkedList);
     setModalData(checkedList);
     setModalVisible(true);
   };
 
   const requestMessages = async () => {
     const query = history.location.query;
-    const productKey = (query && (query.pk as string)) || '';
-    const deviceName = (query && (query.deviceName as string)) || '';
+    const deviceKey = (query && (query.deviceKey as string)) || '';
     try {
-      let messages = await getMessages(productKey, deviceName);
+      let messages = await getMessages(deviceKey);
       messages = messages.map((item) => {
         let dataObj = {};
         try {
@@ -57,6 +55,16 @@ export default ({ statusArr = [] }: Props) => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const gotoProductFuncPage = () => {
+    const { pathname, search, query } = history.location;
+    const productKey = (query && (query.pk as string)) || '';
+    const url = `/product/detail/${productKey}?current=func`;
+    const backUrl = pathname + '?' + search;
+    history.push(url, {
+      backUrl,
+    });
   };
 
   return (
@@ -100,6 +108,18 @@ export default ({ statusArr = [] }: Props) => {
           </Card>
         );
       })}
+      {statusArr.length === 0 && (
+        <Alert
+          message="未定义运行状态，请前往'功能定义'页面进行管理"
+          type="info"
+          showIcon
+          action={
+            <Button onClick={gotoProductFuncPage} size="small" type="primary">
+              前往管理
+            </Button>
+          }
+        />
+      )}
       <StatusModal
         dataList={modalData}
         visible={modalVisible}

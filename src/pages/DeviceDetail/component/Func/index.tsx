@@ -16,7 +16,11 @@ export default () => {
     const productKey = (query && (query.pk as string)) || '';
     try {
       const arr = await getProductFunc(productKey);
-      setFuncArr(arr);
+      if (Array.isArray(arr)) {
+        setFuncArr(arr);
+      } else {
+        setFuncArr([]);
+      }
     } catch (err) {
       console.log(err);
     }

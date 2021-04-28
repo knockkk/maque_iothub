@@ -11,6 +11,7 @@ export default ({ info }: Props) => {
   } else {
     status = connnected ? '在线' : '离线';
   }
+  console.log('info', info);
   return (
     <Descriptions
       title="设备信息"
@@ -26,9 +27,9 @@ export default ({ info }: Props) => {
       <Descriptions.Item label="设备状态">
         <DeviceStatus status={status} />
       </Descriptions.Item>
-      <Descriptions.Item label="productKey">
-        {info.productKey}
-      </Descriptions.Item>
+      <Descriptions.Item label="deviceKey">{info.deviceKey}</Descriptions.Item>
+      <Descriptions.Item label="所属产品">{info.productName}</Descriptions.Item>
+      <Descriptions.Item label="描述">{info.description}</Descriptions.Item>
     </Descriptions>
   );
 };

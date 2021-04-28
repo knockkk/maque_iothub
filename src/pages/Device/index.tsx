@@ -4,7 +4,12 @@ import { useEffect, useState } from 'react';
 import { history } from 'umi';
 import List from './components/List';
 import SearchSelectProduct from './components/SearchSelectProduct';
-import { getDevices, createDevice, deleteDevice } from '@/apis/device';
+import {
+  getDevices,
+  createDevice,
+  deleteDevice,
+  sendCmdRunStatus,
+} from '@/apis/device';
 import DeviceFormModal from './components/DeviceFormModal';
 import ReloadIcon from '@/components/ReloadIcon';
 
@@ -43,8 +48,10 @@ export default () => {
           status = item.connected ? '在线' : '离线';
         }
         return {
-          deviceName: item.deviceName,
           productKey: item.productKey,
+          deviceKey: item.deviceKey,
+          deviceName: item.deviceName,
+          productName: item.productName,
           connected: status,
           lastOnlineTime: item.lastOnlineTime ? item.lastOnlineTime : '无',
         };
@@ -73,9 +80,9 @@ export default () => {
       console.log(err);
     }
   };
-  const hanleDeviceDelete = async (item: API.Device) => {
+  const hanleDeviceDelete = async (deviceKey: string) => {
     try {
-      const resp = await deleteDevice(item);
+      const resp = await deleteDevice(deviceKey);
       if (resp.status === 200) {
         message.success('删除成功');
         updateDeviceList(currPK);
@@ -83,6 +90,17 @@ export default () => {
         message.error('删除失败' + JSON.stringify(resp));
       }
     } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSendCmd = async (status: 'off' | 'on', deviceKey: string) => {
+    try {
+      await sendCmdRunStatus(deviceKey, status);
+      message.success('发送指令成功');
+      updateDeviceList(currPK);
+    } catch (err) {
+      message.error('发送指令失败');
       console.log(err);
     }
   };
@@ -143,7 +161,12 @@ export default () => {
         </Button>
         <Search onSearch={() => {}} allowClear placeholder="输入设备名称查询" />
       </Space>
-      <List list={deviceList} loading={loading} onDelete={hanleDeviceDelete} />
+      <List
+        list={deviceList}
+        loading={loading}
+        onDelete={hanleDeviceDelete}
+        onSendCmd={handleSendCmd}
+      />
 
       <DeviceFormModal
         visible={isModalVisible}

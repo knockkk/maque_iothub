@@ -1,27 +1,32 @@
-import { Table, Space, Divider } from 'antd';
+import { Table, Space, Divider, Switch, message } from 'antd';
 import { history } from 'umi';
 import { unixToTimeString } from '@/utils/time';
 import DeviceStatus from '@/components/DeviceStatus';
 interface Props {
   list: API.Device[];
-  onDelete: (item: API.Device) => void;
+  onDelete: (key: string) => void;
+  onSendCmd?: (status: 'on' | 'off', deviceKey: string) => void;
   loading?: boolean;
 }
 export default (props: Props) => {
   const handleCheck = (item: API.Device) => {
     const { pathname, search } = history.location;
-    const backUrl = pathname + search;
+    const backUrl = pathname + '?' + search;
     history.push(
-      `/device/detail?pk=${item.productKey}&deviceName=${item.deviceName}`,
+      `/device/detail?pk=${item.productKey}&deviceKey=${item.deviceKey}`,
       {
         backUrl,
       },
     );
   };
-  const handleDelete = (item: API.Device) => {
-    props.onDelete && props.onDelete(item);
+  const handleDelete = (deviceKey: string) => {
+    props.onDelete && props.onDelete(deviceKey);
   };
 
+  const onRunStatusChange = async (checked: boolean, deviceKey: string) => {
+    const status = checked ? 'off' : 'on';
+    props.onSendCmd && props.onSendCmd(status, deviceKey);
+  };
   const columns = [
     {
       title: '设备名称',
@@ -29,16 +34,30 @@ export default (props: Props) => {
       key: 'deviceName',
     },
     {
-      title: 'productKey',
-      dataIndex: 'productKey',
-      key: 'productKey',
+      title: '产品名称',
+      dataIndex: 'productName',
+      key: 'productName',
     },
     {
       title: '状态',
       dataIndex: 'connected',
       key: 'connected',
-      render: (status: string) => {
-        return <DeviceStatus status={status} />;
+      render: (status: string, item: API.Device) => {
+        return (
+          <Space>
+            <DeviceStatus status={status} />
+            {status !== '未激活' && (
+              <Switch
+                checkedChildren="开机"
+                unCheckedChildren="关机"
+                checked={status === '离线'}
+                onChange={(checked) =>
+                  onRunStatusChange(checked, item.deviceKey || '')
+                }
+              />
+            )}
+          </Space>
+        );
       },
     },
     {
@@ -49,7 +68,7 @@ export default (props: Props) => {
     {
       title: '操作',
       key: 'action',
-      render: (item: any) => (
+      render: (item: API.Device) => (
         <Space size="small">
           <a
             onClick={() => {
@@ -61,7 +80,7 @@ export default (props: Props) => {
           <Divider type="vertical" />
           <a
             onClick={() => {
-              handleDelete(item);
+              item.deviceKey && handleDelete(item.deviceKey);
             }}
           >
             删除

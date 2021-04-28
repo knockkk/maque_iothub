@@ -19,21 +19,20 @@ export default () => {
 
   const requestDevice = async () => {
     const query = history.location.query;
-    const productKey = query && (query.pk as string);
-    const deviceName = query && (query.deviceName as string);
-    try {
-      const device = await getDevice({ productKey, deviceName });
-      setDevice(device);
-    } catch (err) {
-      console.log(err);
+    const deviceKey = query && (query.deviceKey as string);
+    if (deviceKey) {
+      try {
+        const device = await getDevice(deviceKey);
+        setDevice(device);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
   const PageContent = () => (
     <Descriptions column={2} style={{ marginBottom: -16 }}>
-      <Descriptions.Item label="ProductKey">
-        {device.productKey}
-      </Descriptions.Item>
+      <Descriptions.Item label="产品">{device.productName}</Descriptions.Item>
       <Descriptions.Item label="deviceSecret">
         <Space>
           <span>******</span>
@@ -73,11 +72,8 @@ export default () => {
         footer={[]}
       >
         <Descriptions bordered>
-          <Descriptions.Item label="ProductKey" span={3}>
-            {device.productKey}
-          </Descriptions.Item>
-          <Descriptions.Item label="DeviceName" span={3}>
-            {device.deviceName}
+          <Descriptions.Item label="DeviceKey" span={3}>
+            {device.deviceKey}
           </Descriptions.Item>
           <Descriptions.Item label="DeviceSecret" span={3}>
             {device.deviceSecret}

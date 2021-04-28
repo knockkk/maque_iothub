@@ -1,7 +1,11 @@
-import ProForm, { ProFormText, ProFormSelect } from '@ant-design/pro-form';
+import ProForm, {
+  ProFormText,
+  ProFormSelect,
+  ProFormTextArea,
+} from '@ant-design/pro-form';
 import { getProducts } from '@/apis/user';
 import { useEffect, useState } from 'react';
-import { Modal, Alert } from 'antd';
+import { Modal } from 'antd';
 interface Props {
   initialValues?: API.CreateDevice;
   onSubmit?: (value: API.CreateDevice) => void;
@@ -40,10 +44,6 @@ export default (props: Props) => {
       onCancel={props.onCancel}
       footer={[]}
     >
-      <Alert
-        message="特别说明：'设备名称'可以为空，当为空时，平台会生成产品下的唯一标识符作为'设备名称'。"
-        type="info"
-      />
       <ProForm<{
         productKey: string;
         deviceName: string;
@@ -60,9 +60,11 @@ export default (props: Props) => {
             rules={[{ required: true, message: '请选择产品' }]}
           />
         </ProForm.Group>
+
         <ProForm.Group>
           <ProFormText width="md" name="deviceName" label="设备名称" />
         </ProForm.Group>
+        <ProFormTextArea width="md" name="description" label="描述" />
       </ProForm>
     </Modal>
   );

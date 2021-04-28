@@ -10,7 +10,7 @@ export async function currentUser(): Promise<API.CurrentUser> {
 }
 
 export async function getProducts(): Promise<API.Product[]> {
-  return request.get('/product');
+  return request.get('/product/list');
 }
 
 export async function getProduct(productKey: string): Promise<API.Product> {
@@ -18,7 +18,7 @@ export async function getProduct(productKey: string): Promise<API.Product> {
 }
 
 export async function createProduct(data: API.CreateProduct) {
-  return request.post('/product', {
+  return request.put('/product/create', {
     data,
   });
 }
@@ -30,7 +30,7 @@ export async function updateProduct(data: API.UpdateProduct) {
 }
 
 export async function deleteProduct(productKey: string) {
-  return request.delete(`/product/${productKey}`);
+  return request.delete(`/product/delete/${productKey}`);
 }
 
 export async function getProductFunc(productKey: string) {

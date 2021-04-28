@@ -37,16 +37,20 @@ declare namespace API {
   };
   type Device = {
     productKey?: string;
+    deviceKey?: string;
+    productName?: string;
     deviceName?: string;
     deviceSecret?: string;
     status?: string;
     connction?: object;
     connected?: boolean | string;
     lastOnlineTime?: number | string;
+    description?: string;
   };
   type CreateDevice = {
-    productKey: string;
-    deviceName: string;
+    productKey?: string;
+    deviceName?: string;
+    description?: string;
   };
   type Message = {
     dataType?: string;
