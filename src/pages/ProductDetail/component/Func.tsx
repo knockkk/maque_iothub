@@ -41,22 +41,20 @@ export default (props: Props) => {
       })
     : [];
   const handleSubmit = async (values: API.FuncDef) => {
+    setIsModalVisible(false);
     try {
-      setIsModalVisible(false);
       if (props.productKey) {
         const resp = await addProductFunc(props.productKey, values);
-        if (resp.code === 500) {
-          throw '服务器错误';
+        if (resp.status === 200) {
+          requestFuncArr(props.productKey);
+          message.success('添加成功');
+          return;
         }
-        requestFuncArr(props.productKey);
-        message.success('添加成功');
-      } else {
-        message.error('添加功能失败');
       }
     } catch (err) {
-      message.error(err);
-      setIsModalVisible(false);
+      console.log(err);
     }
+    message.error('添加失败');
   };
   const handleDelete = async (item: API.FuncDef) => {
     if (props.productKey && item.funcKey) {
